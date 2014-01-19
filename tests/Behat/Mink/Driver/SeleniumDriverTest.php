@@ -8,7 +8,7 @@ use Selenium\Client as SeleniumClient;
 /**
  * @group seleniumdriver
  */
-class SeleniumDriverTest extends JavascriptDriverTest
+class SeleniumDriverTest extends CssDriverTest
 {
     protected static function getDriver()
     {
