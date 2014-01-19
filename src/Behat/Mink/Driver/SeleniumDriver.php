@@ -4,6 +4,7 @@ namespace Behat\Mink\Driver;
 
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
+use Behat\Mink\Exception\DriverException;
 use Behat\Mink\Session;
 use Selenium\Client as SeleniumClient;
 use Selenium\Exception as SeleniumException;
@@ -261,8 +262,11 @@ class SeleniumDriver extends CoreDriver
      */
     public function getText($xpath)
     {
-        $result = $this->browser->getText(SeleniumLocator::xpath($xpath));
+        if(! $this->isVisible($xpath)) { //cross-driver compability
+            return "";
+        }
 
+        $result = $this->browser->getText(SeleniumLocator::xpath($xpath));
         return preg_replace("/[ \n]+/", " ", $result);
     }
 
@@ -456,6 +460,10 @@ JS;
      */
     public function click($xpath)
     {
+        if(! $this->isVisible($xpath)) {  //cross-driver compability
+            throw new DriverException('Element not visible, cannot be clicked');
+        }
+
         $this->browser->click(SeleniumLocator::xpath($xpath));
         $readyState = $this->browser->getEval('window.document.readyState');
 
